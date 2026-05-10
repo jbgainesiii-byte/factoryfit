@@ -653,6 +653,15 @@ function Report({ submission, suppliers, attachments, setView, copyReport }) {
 
 function Admin(props) {
   const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState("");
+  function openAdmin() {
+    if (pin.trim().toLowerCase() === adminPin) {
+      setPinError("");
+      props.setOpen(true);
+      return;
+    }
+    setPinError("Use factoryfit, all lowercase with no spaces.");
+  }
   if (!props.open) {
     return (
       <section className="mx-auto max-w-2xl px-5 py-12">
@@ -663,8 +672,23 @@ function Admin(props) {
           <div className="rounded-lg border border-line bg-white p-4 text-sm">
             <strong>PIN format:</strong> use <code className="rounded bg-bone px-2 py-1 font-black">factoryfit</code>, all lowercase with no space.
           </div>
-          <label className="field">Admin PIN<input className="field-control" onChange={(event) => setPin(event.target.value)} type="password" value={pin} /></label>
-          <button className="btn btn-primary" onClick={() => pin === adminPin && props.setOpen(true)} type="button">Open Admin</button>
+          <label className="field">
+            Admin PIN
+            <input
+              autoCapitalize="none"
+              autoCorrect="off"
+              className="field-control"
+              onChange={(event) => {
+                setPin(event.target.value);
+                setPinError("");
+              }}
+              onKeyDown={(event) => event.key === "Enter" && openAdmin()}
+              type="password"
+              value={pin}
+            />
+          </label>
+          {pinError && <p className="rounded-lg border border-[#d7a38f] bg-[#fff3ed] px-4 py-3 text-sm font-black text-[#a6452e]">{pinError}</p>}
+          <button className="btn btn-primary" onClick={openAdmin} type="button">Open Admin</button>
         </div>
       </section>
     );
