@@ -13,7 +13,6 @@ import {
 } from "../lib/dataStore";
 import {
   assets,
-  demoIntake,
   diagnose,
   formSteps,
   initialIntake,
@@ -34,9 +33,24 @@ const howItWorksSteps = [
 ];
 
 const decisionCards = [
-  ["Blanks + decoration", "Fastest validation path when the founder needs printing, embroidery, or hats without custom garment development."],
-  ["Premium blanks + relabeling", "Better for a brand feel when the fit and fabric can come from existing garments, but labels and packaging matter."],
-  ["Sample room first", "Best when the idea is custom but the founder still needs specs, references, fit direction, or a tech pack before factory outreach."],
+  {
+    image: "/images/factory-fit-decoration.jpg",
+    alt: "Premium blank hoodies, T-shirts, embroidery thread, ink swatches, labels, and an order worksheet",
+    title: "Blanks + decoration",
+    copy: "Fastest validation path when the founder needs printing, embroidery, or hats without custom garment development.",
+  },
+  {
+    image: "/images/factory-fit-finishing.jpg",
+    alt: "Private-label apparel finishing setup with woven labels, hang tags, packaging, and garment collar details",
+    title: "Premium blanks + relabeling",
+    copy: "Better for a brand feel when the fit and fabric can come from existing garments, but labels and packaging matter.",
+  },
+  {
+    image: "/images/factory-fit-sample-room.jpg",
+    alt: "Custom cut-and-sew development table with pattern paper, muslin, fabric swatches, pins, and measuring tape",
+    title: "Sample room first",
+    copy: "Best when the idea is custom but the founder still needs specs, references, fit direction, or a tech pack before factory outreach.",
+  },
 ];
 
 const blankAppState = {
@@ -333,7 +347,7 @@ function Landing({ setView }) {
           <img
             alt="Apparel sourcing worktable with folded blanks, fabric swatches, labels, measuring tape, and a spec sheet"
             className="h-72 w-full object-cover"
-            src="/images/factory-fit-worktable.png"
+            src="/images/factory-fit-worktable.jpg"
           />
           <div className="grid gap-5 p-7">
             <p className="text-xs font-black uppercase tracking-[0.08em] text-paper/70">Example outcome</p>
@@ -381,10 +395,13 @@ function Landing({ setView }) {
 
       <section className="mx-auto max-w-7xl px-5 pb-14 md:px-10">
         <div className="grid gap-4 md:grid-cols-3">
-          {decisionCards.map(([title, copy]) => (
-            <article className="panel p-6" key={title}>
-              <p className="eyebrow">{title}</p>
-              <p className="mt-4 text-sm leading-6">{copy}</p>
+          {decisionCards.map((card) => (
+            <article className="panel overflow-hidden" key={card.title}>
+              <img alt={card.alt} className="h-56 w-full object-cover" src={card.image} />
+              <div className="p-6">
+                <p className="eyebrow">{card.title}</p>
+                <p className="mt-4 text-sm leading-6">{card.copy}</p>
+              </div>
             </article>
           ))}
         </div>
@@ -434,7 +451,6 @@ function Intake({ intake, setIntake, updateField, toggleAsset, step, setStep, ne
       <form className="panel p-6 md:p-8" onSubmit={submitIntake}>
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <span className="text-sm font-black text-muted">Step {step + 1} of {formSteps.length}</span>
-          <button className="text-sm font-black text-clay" onClick={() => setIntake(demoIntake)} type="button">Load test answers</button>
         </div>
 
         {step === 0 && <BrandBasics intake={intake} updateField={updateField} />}
