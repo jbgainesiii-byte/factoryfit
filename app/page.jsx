@@ -26,32 +26,17 @@ import {
 
 const adminPin = "factoryfit";
 
-const homepageImages = [
-  {
-    src: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=900&q=80",
-    alt: "Fabric and apparel development workspace",
-    label: "Sample room",
-    copy: "For custom ideas that need pattern, fit, sample, or tech pack development before production.",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=900&q=80",
-    alt: "Premium garment finishing detail",
-    label: "Brand finish",
-    copy: "For founders who need labels, neck tags, packaging, embroidery, or print decisions clarified.",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=900&q=80",
-    alt: "Neutral garments hanging on a rack",
-    label: "Supplier fit",
-    copy: "For deciding whether the next conversation is with a blank supplier, decorator, sample room, or factory.",
-  },
-];
-
 const howItWorksSteps = [
   ["Intake", "Founder, product, budget, quantity, assets, timeline, and concern."],
   ["Diagnosis", "A rule-based production path: blanks, relabeling, private label, cut-and-sew, sample room, or prep first."],
   ["Score", "A readiness score across clarity, specs, budget, minimums, timeline, and outreach assets."],
   ["Shortlist", "Initial supplier candidates plus a clear signal when the report needs manual review before outreach."],
+];
+
+const decisionCards = [
+  ["Blanks + decoration", "Fastest validation path when the founder needs printing, embroidery, or hats without custom garment development."],
+  ["Premium blanks + relabeling", "Better for a brand feel when the fit and fabric can come from existing garments, but labels and packaging matter."],
+  ["Sample room first", "Best when the idea is custom but the founder still needs specs, references, fit direction, or a tech pack before factory outreach."],
 ];
 
 const blankAppState = {
@@ -344,17 +329,17 @@ function Landing({ setView }) {
             <a className="btn btn-secondary" href="#how">See How It Works</a>
           </div>
         </div>
-        <aside className="panel overflow-hidden">
+        <aside className="panel overflow-hidden bg-charcoal text-paper">
           <img
-            alt="Folded premium apparel blanks and garment texture"
-            className="h-64 w-full object-cover"
-            src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=1200&q=80"
+            alt="Apparel sourcing worktable with folded blanks, fabric swatches, labels, measuring tape, and a spec sheet"
+            className="h-72 w-full object-cover"
+            src="/images/factory-fit-worktable.png"
           />
           <div className="grid gap-5 p-7">
-            <p className="eyebrow">Example outcome</p>
+            <p className="text-xs font-black uppercase tracking-[0.08em] text-paper/70">Example outcome</p>
             <h2 className="font-serif text-4xl">Premium blanks + relabeling</h2>
-            <p>Best for a founder validating demand before custom patterns, higher minimums, and longer sampling timelines. Supplier candidates are shortlisted against this path.</p>
-            <div className="flex items-end justify-between border-t border-line pt-5">
+            <p className="text-paper/80">Best for validating demand before custom patterns, higher minimums, and longer sampling timelines.</p>
+            <div className="flex items-end justify-between border-t border-paper/20 pt-5">
               <strong className="font-serif text-7xl font-medium leading-none">75</strong>
               <span className="badge">Almost Ready</span>
             </div>
@@ -396,13 +381,10 @@ function Landing({ setView }) {
 
       <section className="mx-auto max-w-7xl px-5 pb-14 md:px-10">
         <div className="grid gap-4 md:grid-cols-3">
-          {homepageImages.map((image) => (
-            <article className="panel overflow-hidden" key={image.label}>
-              <img alt={image.alt} className="h-56 w-full object-cover" src={image.src} />
-              <div className="p-5">
-                <p className="eyebrow">{image.label}</p>
-                <p className="mt-2 text-sm">{image.copy}</p>
-              </div>
+          {decisionCards.map(([title, copy]) => (
+            <article className="panel p-6" key={title}>
+              <p className="eyebrow">{title}</p>
+              <p className="mt-4 text-sm leading-6">{copy}</p>
             </article>
           ))}
         </div>
