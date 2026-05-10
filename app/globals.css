@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f5efe4;
+  color: #22211f;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+@layer components {
+  .eyebrow {
+    @apply text-xs font-black uppercase tracking-[0.08em] text-clay;
+  }
+
+  .panel {
+    @apply rounded-lg border border-line bg-paper shadow-editorial;
+  }
+
+  .btn {
+    @apply inline-flex min-h-11 items-center justify-center rounded-lg border px-4 py-2 text-sm font-black transition;
+  }
+
+  .btn-primary {
+    @apply border-charcoal bg-charcoal text-paper hover:bg-ink;
+  }
+
+  .btn-secondary {
+    @apply border-line bg-paper text-charcoal hover:border-clay;
+  }
+
+  .field {
+    @apply grid gap-2 text-sm font-extrabold text-charcoal;
+  }
+
+  .field-control {
+    @apply min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-ink outline-none focus:border-clay focus:ring-4 focus:ring-[#efe0d3];
+  }
+
+  .badge {
+    @apply inline-flex w-fit items-center rounded-full bg-[#e5eadf] px-3 py-1 text-xs font-black text-[#46523f];
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
