@@ -12,6 +12,7 @@ Please complete the intake as if you were preparing your first clothing drop. At
 Please pay attention to:
 - whether the recommended production path feels accurate
 - whether the readiness score feels fair
+- whether the initial supplier candidates feel relevant enough to review
 - whether the cost reality and likely mistake are helpful
 - whether the outreach script sounds usable
 - what is missing or confusing
@@ -30,6 +31,7 @@ Please pay attention to:
    - Executive Read
    - Cost Reality
    - Your Likely Mistake
+   - Candidate Shortlist Status
    - Outreach Script
    - Red Flags
    - 30-Day Action Plan
@@ -43,12 +45,12 @@ Admin PIN:
 factoryfit
 ```
 
-Use Admin to:
+Open the deployed site with `/#admin` at the end of the URL. Use Admin to:
 
 - view submitted intakes
 - review report summaries
-- edit seed supplier records
-- attach supplier candidates to reports
+- edit supplier candidate records
+- attach a reviewed supplier shortlist to reports
 - read tester feedback
 
 ## Important Note

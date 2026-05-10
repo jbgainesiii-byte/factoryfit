@@ -9,7 +9,7 @@ A clean Next.js/Tailwind MVP for Detroit AI Works. Factory Fit helps first-time 
 - Tailwind CSS
 - Supabase REST for remote tester storage when env vars are present
 - Browser `localStorage` fallback for local/demo use
-- Editable seed supplier data in `data/suppliers.js`
+- Editable research-graded supplier candidate data in `data/suppliers.js`
 - Rule-based diagnosis logic in `lib/factoryFit.js`
 
 ## Core Features
@@ -22,8 +22,9 @@ A clean Next.js/Tailwind MVP for Detroit AI Works. Factory Fit helps first-time 
 - Outreach script generator
 - Supplier questions and red flag checklist
 - 30-day action plan
-- Simple PIN-gated admin supplier database
-- Manual supplier attachment to a report
+- Initial supplier candidate shortlist based on diagnosis
+- Hidden PIN-gated admin supplier workspace
+- Manual reviewed supplier attachment to a report
 - Feedback form
 
 ## Run Locally
@@ -38,6 +39,12 @@ Then open:
 
 ```text
 http://localhost:3000
+```
+
+Hidden admin URL:
+
+```text
+/#admin
 ```
 
 Admin PIN:
@@ -124,9 +131,9 @@ Internal admin:
 
 ```text
 Admin PIN: factoryfit
-Use Admin to view submissions, edit seed suppliers, attach supplier candidates to a report, and review feedback.
+Use Admin to view submissions, edit supplier candidates, attach a reviewed shortlist to a report, and review feedback.
 ```
 
 ## Notes
 
-This is not a marketplace and does not guarantee supplier performance, pricing, availability, quality, timelines, or business outcomes. It is a decision-support tool for choosing a realistic sourcing path.
+This is not a marketplace and does not guarantee supplier performance, pricing, availability, quality, timelines, or business outcomes. It is a decision-support tool for choosing a realistic sourcing path, then creating a small reviewed supplier-candidate shortlist.

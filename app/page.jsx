@@ -51,7 +51,7 @@ const howItWorksSteps = [
   ["Intake", "Founder, product, budget, quantity, assets, timeline, and concern."],
   ["Diagnosis", "A rule-based production path: blanks, relabeling, private label, cut-and-sew, sample room, or prep first."],
   ["Score", "A readiness score across clarity, specs, budget, minimums, timeline, and outreach assets."],
-  ["Report", "A practical brief with next move, cost reality, outreach script, questions, and red flags."],
+  ["Shortlist", "Initial supplier candidates plus a clear signal when the report needs manual review before outreach."],
 ];
 
 const blankAppState = {
@@ -98,6 +98,7 @@ export default function FactoryFitApp() {
     }
 
     loadState();
+    if (window.location.hash === "#admin") setView("admin");
     return () => {
       cancelled = true;
     };
@@ -309,7 +310,6 @@ function Header({ view, setView }) {
             ["home", "Home"],
             ["intake", "Intake"],
             ["report", "Report"],
-            ["admin", "Admin"],
           ].map(([key, label]) => (
             <button
               className={`rounded-full px-3 py-2 ${view === key ? "bg-paper text-charcoal" : "hover:text-charcoal"}`}
@@ -337,7 +337,7 @@ function Landing({ setView }) {
           </h1>
           <p className="mt-7 max-w-3xl text-lg leading-8 text-[#514d46] md:text-xl">
             Factory Fit helps first-time apparel founders figure out what kind of supplier they need,
-            whether they are ready to contact one, and what to prepare before spending money on samples or production.
+            whether they are ready to contact one, and which supplier candidates deserve human review before they spend money.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <button className="btn btn-primary" onClick={() => setView("intake")} type="button">Start Factory Fit Check</button>
@@ -353,7 +353,7 @@ function Landing({ setView }) {
           <div className="grid gap-5 p-7">
             <p className="eyebrow">Example outcome</p>
             <h2 className="font-serif text-4xl">Premium blanks + relabeling</h2>
-            <p>Best for a founder validating demand before custom patterns, higher minimums, and longer sampling timelines.</p>
+            <p>Best for a founder validating demand before custom patterns, higher minimums, and longer sampling timelines. Supplier candidates are shortlisted against this path.</p>
             <div className="flex items-end justify-between border-t border-line pt-5">
               <strong className="font-serif text-7xl font-medium leading-none">75</strong>
               <span className="badge">Almost Ready</span>
@@ -412,7 +412,7 @@ function Landing({ setView }) {
         <div className="panel p-7">
           <p className="eyebrow">What you get</p>
           <h2 className="mt-3 font-serif text-4xl">A practical sourcing brief</h2>
-          <List items={["Production path recommendation", "Readiness score", "Supplier type explanation", "Prep checklist", "Outreach script", "Red flags", "30-day action plan"]} />
+          <List items={["Production path recommendation", "Readiness score", "Initial supplier candidates", "Reviewed shortlist workflow", "Prep checklist", "Outreach script", "Red flags", "30-day action plan"]} />
         </div>
         <div className="panel p-7">
           <p className="eyebrow">Designed for</p>
@@ -555,6 +555,7 @@ function Report({ submission, suppliers, attachments, setView, copyReport }) {
   const attachedSuppliers = suppliers.filter((supplier) => (attachments[submission.id] || []).includes(supplier.id));
   const { intake, diagnosis } = submission;
   const visual = pathVisuals[diagnosis.path];
+  const suggestedSuppliers = matchedSuppliers(suppliers, submission, attachedSuppliers);
   return (
     <section className="mx-auto max-w-7xl px-5 py-8 md:px-10">
       <div className="no-print mb-4 flex flex-wrap justify-end gap-3">
@@ -613,6 +614,26 @@ function Report({ submission, suppliers, attachments, setView, copyReport }) {
               ))}
             </div>
           </Module>
+          <Module title="Candidate Shortlist Status" full>
+            {attachedSuppliers.length ? (
+              <div className="grid gap-4">
+                <div className="rounded-lg border border-[#b9c2a4] bg-[#f4f7ed] p-4">
+                  <strong>Reviewed shortlist attached</strong>
+                  <p className="mt-2 text-sm">These supplier candidates were manually attached after reviewing the founder intake. They are research-graded candidates, not guaranteed matches.</p>
+                </div>
+                <SupplierCards suppliers={attachedSuppliers} />
+              </div>
+            ) : (
+              <div className="grid gap-4">
+                <div className="rounded-lg border border-[#d7a38f] bg-[#fff3ed] p-4">
+                  <strong>Candidate shortlist pending review</strong>
+                  <p className="mt-2 text-sm">The instant report points the founder toward the right supplier type. The paid/concierge layer is the reviewed shortlist: 3-7 candidates checked against product, quantity, budget, readiness, and path.</p>
+                </div>
+                <p className="text-sm font-black text-muted">Initial database candidates based on this diagnosis:</p>
+                <SupplierCards suppliers={suggestedSuppliers} />
+              </div>
+            )}
+          </Module>
           <Module title="Suggested Supplier Search Criteria" full>
             <p>{diagnosis.criteria}</p>
           </Module>
@@ -630,24 +651,57 @@ function Report({ submission, suppliers, attachments, setView, copyReport }) {
               {diagnosis.plan.map(([week, action]) => <div className="rounded-lg border border-line bg-white p-4" key={week}><strong>{week}</strong><p className="mt-2 text-sm">{action}</p></div>)}
             </div>
           </Module>
-          <Module title="Supplier Candidates Attached by Admin" full>
-            {attachedSuppliers.length ? (
-              <div className="grid gap-3">
-                {attachedSuppliers.map((supplier) => (
-                  <p key={supplier.id}><strong>{supplier.name}</strong> - {supplier.type}. {supplier.bestFor} <br /><a className="font-bold text-clay" href={supplier.website}>{supplier.website}</a></p>
-                ))}
-              </div>
-            ) : (
-              <p>No supplier candidates attached yet. Use the admin workspace to add research-graded supplier candidates.</p>
-            )}
-          </Module>
           <Module title="Feedback" full>
-            <p>Was this useful? What was missing? What would you pay for this? Would you recommend it?</p>
+            <p>Was the diagnosis useful? Would a reviewed supplier shortlist make this worth paying for? What was missing?</p>
             <button className="btn btn-secondary mt-4" onClick={() => setView("feedback")} type="button">Leave Feedback</button>
           </Module>
         </div>
       </article>
     </section>
+  );
+}
+
+function matchedSuppliers(suppliers, submission, attachedSuppliers) {
+  const attachedIds = new Set(attachedSuppliers.map((supplier) => supplier.id));
+  return suppliers
+    .filter((supplier) => !attachedIds.has(supplier.id))
+    .map((supplier) => ({ supplier, score: supplierMatchScore(supplier, submission) }))
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5)
+    .map((item) => item.supplier);
+}
+
+function supplierMatchScore(supplier, submission) {
+  const { intake, diagnosis } = submission;
+  let score = 0;
+  if ((supplier.fitPaths || []).includes(diagnosis.path)) score += 5;
+  if ((supplier.productTags || []).includes(intake.productType)) score += 2;
+  if (diagnosis.path.includes("Blanks") && supplier.techPackRequired === "No") score += 2;
+  if ((diagnosis.path === "Cut-and-Sew" || diagnosis.path === "Sample Room First") && String(supplier.type || "").toLowerCase().includes("cut")) score += 2;
+  if (intake.units === "Under 25" && String(supplier.moq).toLowerCase().includes("low")) score += 1;
+  if (intake.budget === "Under $500" && supplier.priceTier === "High") score -= 4;
+  return score;
+}
+
+function SupplierCards({ suppliers }) {
+  if (!suppliers.length) return <p>No database candidates fit this path yet. Add candidates in the internal admin workspace.</p>;
+  return (
+    <div className="grid gap-3 md:grid-cols-2">
+      {suppliers.map((supplier) => (
+        <article className="rounded-lg border border-line bg-white p-4" key={supplier.id}>
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <strong>{supplier.name}</strong>
+            <span className="badge">{supplier.verificationTier}</span>
+          </div>
+          <p className="mt-2 text-sm"><strong>{supplier.type}</strong> - {supplier.location}</p>
+          <p className="mt-3 text-sm"><strong>Best for:</strong> {supplier.bestFor}</p>
+          <p className="mt-2 text-sm"><strong>Avoid if:</strong> {supplier.avoidIf}</p>
+          <p className="mt-2 text-sm"><strong>MOQ signal:</strong> {supplier.moq}</p>
+          <a className="mt-3 inline-block font-bold text-clay" href={supplier.website} rel="noreferrer" target="_blank">{supplier.website}</a>
+        </article>
+      ))}
+    </div>
   );
 }
 
@@ -660,7 +714,7 @@ function Admin(props) {
       props.setOpen(true);
       return;
     }
-    setPinError("Use factoryfit, all lowercase with no spaces.");
+    setPinError("That PIN did not open the admin workspace.");
   }
   if (!props.open) {
     return (
@@ -668,10 +722,7 @@ function Admin(props) {
         <div className="panel grid gap-5 p-7">
           <p className="eyebrow">Internal admin</p>
           <h1 className="font-serif text-5xl">Supplier and report workspace</h1>
-          <p>Enter the MVP admin PIN to view private submissions and edit the seed supplier database.</p>
-          <div className="rounded-lg border border-line bg-white p-4 text-sm">
-            <strong>PIN format:</strong> use <code className="rounded bg-bone px-2 py-1 font-black">factoryfit</code>, all lowercase with no space.
-          </div>
+          <p>Enter the MVP admin PIN to view private submissions, edit supplier candidates, and attach a reviewed shortlist to a founder report.</p>
           <label className="field">
             Admin PIN
             <input
